@@ -15,6 +15,8 @@
 #ifndef utils_h
 #define utils_h
 
+#include <Time.h>
+
 void printLeadingCharacter(int number, char character);
 void printLeadingZero(int number);
 time_t getLocalTime(time_t utc, int TZ, boolean isDst);

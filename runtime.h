@@ -34,9 +34,6 @@ class Runtime
 {
 private:
 public:
-	static void step(void);
-	static void print(void);
-	static void boot(void);
 	static void banner(void);
 	static void error(const __FlashStringHelper * string_literal);
 	static void halt(void);

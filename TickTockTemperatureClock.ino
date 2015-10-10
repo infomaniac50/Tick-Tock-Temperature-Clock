@@ -24,21 +24,70 @@
 #include "runtime.h"
 #include "clock.h"
 #include "thermometer.h"
+#include "display.h"
 
+int function = 0;
 SimpleTimer timer;
 
 void setup()
 {
-	Runtime::boot();
+  // Pin 13 is a floater so explicitly turn it off.
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
+
+  // Set backlight brightness
+  pinMode(BACKLIGHT_PWM_PIN, OUTPUT);
+  
+  Clock::boot();
+
+  Display::boot();
+  Display::brightness(DEFAULT_BRIGHTNESS);
+
+  Runtime::banner();
+
+  Thermometer::boot();
 	
 	timer.setInterval(UPDATETIME_INTERVAL, Clock::update);
 	timer.setInterval(UPDATETEMP_INTERVAL, Thermometer::update);
 
-	timer.setInterval(STEP_DURATION, Runtime::step);
-	timer.setInterval(DISPLAY_INTERVAL, Runtime::print);
+	timer.setInterval(STEP_DURATION, step);
+	timer.setInterval(DISPLAY_INTERVAL, print);
 }
 
 void loop()
 {
 	timer.run();
+}
+
+void step()
+{
+  switch (function)
+  {
+    case 0:
+      function = 1;
+      break;
+    case 1:
+      function = 0;
+      break;
+    default:
+      function = 0;
+      break;
+  }
+}
+
+void print()
+{
+  switch (function)
+  {
+    case 0:
+      // Display Current Time
+      Clock::printDateTime();
+      break;
+    case 1:
+      // Display Current Temperature
+      Thermometer::printTemperature();
+      break;
+    default:
+      break;
+  }
 }
