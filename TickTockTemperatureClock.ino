@@ -37,7 +37,9 @@ void setup()
 
   // Set backlight brightness
   pinMode(BACKLIGHT_PWM_PIN, OUTPUT);
-  
+
+  Serial.begin(9600);
+
   Clock::boot();
 
   Display::boot();
@@ -57,22 +59,29 @@ void setup()
 void loop()
 {
 	timer.run();
+
+  if (Serial.available()) {
+      Clock::set(processSyncMessage());
+  }
+}
+
+// echo -n "T$(date +"%s")"
+unsigned long processSyncMessage() {
+  unsigned long pctime = 0L;
+
+  if(Serial.find(TIME_HEADER)) {
+     pctime = Serial.parseInt();
+     return pctime;
+     if( pctime < DEFAULT_TIME) { // check the value is a valid time (greater than Jan 1 2013)
+       pctime = 0L; // return 0 to indicate that the time is not valid
+     }
+  }
+  return pctime;
 }
 
 void step()
 {
-  switch (function)
-  {
-    case 0:
-      function = 1;
-      break;
-    case 1:
-      function = 0;
-      break;
-    default:
-      function = 0;
-      break;
-  }
+  function = ++function % 2;
 }
 
 void print()

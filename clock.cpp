@@ -90,6 +90,13 @@ struct TimeSettings {
 time_t currentTime;
 struct TimeSettings settings;
 
+void Clock::set(time_t t) {
+  if (t != 0) {
+    RTC.set(t); // set the RTC
+    setTime(t);
+  }
+}
+
 void Clock::boot(void) {
 
 	settings.TZ = -6;
@@ -108,7 +115,7 @@ void Clock::update()
 	else
 	{
 		// Saturday 1st January 2000 12:00:00 AM UTC
-		currentTime = 946684800UL;
+		currentTime = DEFAULT_TIME;
 	}
 
 	currentTime = getLocalTime(currentTime, settings.TZ, settings.IS_DST);

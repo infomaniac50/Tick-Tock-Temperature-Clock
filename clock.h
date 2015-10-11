@@ -15,11 +15,17 @@
 #ifndef clock_h
 #define clock_h
 
+#define DEFAULT_TIME 946684800UL
+
+/*  code to process time sync messages from the serial port   */
+#define TIME_HEADER  "T"   // Header tag for serial time sync message
+
 class Clock
 {
 private:
 
 public:
+  static void set(time_t t);
 	static void boot(void);
 	static void printDate(void);
 	static void printTime(void);
